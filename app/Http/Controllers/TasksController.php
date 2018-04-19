@@ -34,12 +34,19 @@ class TasksController extends Controller
     // postでmessages/にアクセスされた場合の「新規登録処理」
     public function store(Request $request)
     {
-        $store = new Store;
-        $store->content = $request->content;
-        $store->save();
+        $this->validate($request,[
+            'status' => 'required|max:10',
+            'content' => 'required|max:191',
+        ]);
+        
+        $task = new Task;
+        $task->status = $request->status;
+        $task->content = $request->content;
+        $task->save();
 
         return redirect('/');
     }
+    
 
     // getでmessages/idにアクセスされた場合の「取得表示処理」
     public function show($id)
@@ -65,10 +72,16 @@ class TasksController extends Controller
     // putまたはpatchでmessages/idにアクセスされた場合の「更新処理」
     public function update(Request $request, $id)
     {
+      $this->validate($request,[
+            'status'=>'required|max:10',
+            'content' => 'required|max:191',
+        ]);
+        
         $task = Task::find($id);
+        $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
-
+        
         return redirect('/');
     }
 
